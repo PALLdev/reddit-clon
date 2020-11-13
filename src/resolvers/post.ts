@@ -22,11 +22,30 @@ export class PostResolver {
     // Query para el create
     @Mutation(() => Post)                               // graphql type se infiere segun el TS type                   
     async createPost(
-        @Arg('title') title: String,                      // paso parametros q necesito para crear un nuevo objeto
+        @Arg('title') title: String,                      // paso parametros q necesito para crear un nuevo post
         @Ctx() {em}: MyContext                                 
     ): Promise<Post> {                                   // TS type
         const post = em.create(Post, { title });
         await em.persistAndFlush(post);
         return post;
     }
+
+    // Query para el update (update title by ID)
+    @Mutation(() => Post, { nullable: true })                               // graphql type                  
+    async updatePost(
+        @Arg('id') _id: number,                                             // paso parametros (argumentos) necesarios para editar un post
+        @Arg('title', () => String, { nullable: true } ) title: string,
+        @Ctx() {em}: MyContext                                 
+    ): Promise<Post | null> {                                               // TS type
+        const post = await em.findOne(Post, {_id});                         // fetch the post (obtengo un post segun su id para editar)
+        if(!post){                                                          // valido por si no puedo encontrar el post
+            return null;
+        }
+        if(typeof title !== 'undefined') {                                  // valido que me entreguen un input valido (que no este en blanco por ej)
+            post.title = title;                                             // update el nuevo title
+            await em.persistAndFlush(post);
+        }
+        return post;
+    }
+
 }
