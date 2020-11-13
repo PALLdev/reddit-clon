@@ -1,6 +1,5 @@
 import { MikroORM } from '@mikro-orm/core';
 import { __prod__ } from './constants';
-import { Post } from './entities/Post';
 import  microConfig  from './mikro-orm.config';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
@@ -12,7 +11,7 @@ const main = async () => {
     await orm.getMigrator().up();                                           // run migrations automatically
 
     const app = express();
-
+    const port = 4000;
     // app.get("/", (_, res) => {                           // rest endpoint solo para probar que el server funciona
     //     res.send("HOLA");
     // });
@@ -26,8 +25,8 @@ const main = async () => {
 
     apolloServer.applyMiddleware({ app });                  // creating the graphQL endpoint on express
 
-    app.listen(4000, () => {
-        console.log('Server corriendo en localhost:4000')
+    app.listen(port, () => {
+        console.log(`Server corriendo en localhost:${port}`)
     });
 
     // const post = orm.em.create(Post, {title: 'MI PRIMER POST'});            // run sql 
