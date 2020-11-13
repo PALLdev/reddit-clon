@@ -17,7 +17,7 @@ export class Post {
   @Property({ type: 'date' ,onUpdate: () => new Date() })
   updatedAt = new Date();
 
-  @Field()
+  @Field()                   // si quito el decorator field, ya no sera accesible desde mi schema graphQL (you can choose what you want to expose or hide on your graphQL schema )
   @Property({type: 'text'})
   title!: string;
     
