@@ -8,7 +8,6 @@
       "es2017",
       "esnext.asynciterable"
     ],
-    "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "./dist",
     "moduleResolution": "node",
