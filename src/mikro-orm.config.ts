@@ -2,13 +2,14 @@ import { __prod__ } from "./constants";
 import { Post } from "./entities/Post";
 import { MikroORM } from "@mikro-orm/core";
 import path from "path";
+import { User } from "./entities/User";
 
 export default {
     migrations: {
         path: path.join(__dirname, "./migrations"),     // path to the folder with migrations (editado para crear una correcta path absoluta usando la funcion path de NodeJS )
         pattern: /^[\w-]+\d+\.[tj]s$/,                  // regex pattern for the migration files (editado para ts y js)
     },
-    entities: [Post],
+    entities: [Post, User],
     dbName: "reddit-clon",
     type: "postgresql", // one of `mongo` | `mysql` | `mariadb` | `postgresql` | `sqlite`
     user: "postgres",

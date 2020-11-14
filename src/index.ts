@@ -7,6 +7,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { HelloResolver } from './resolvers/hello';
 import { PostResolver } from './resolvers/post';
+import { UserResolver } from './resolvers/user';
 
 const main = async () => {
     const orm = await MikroORM.init(microConfig);                           // conect to a database
@@ -20,7 +21,7 @@ const main = async () => {
 
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
-            resolvers: [HelloResolver, PostResolver],
+            resolvers: [HelloResolver, PostResolver, UserResolver,],
             validate: false,                                 // turning off validation, that uses package Class validator(o algo asi)
         }),
         context: () => ({                                   // context is accesible from all resolvers
