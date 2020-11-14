@@ -20,7 +20,7 @@ export class PostResolver {
     }
 
     // Query para el create
-    @Mutation(() => Post)                               // graphql type se infiere segun el TS type                   
+    @Mutation(() => Post)                               // graphql type se infiere segun el TS type    (retorno un post)               
     async createPost(
         @Arg('title') title: String,                      // paso parametros q necesito para crear un nuevo post
         @Ctx() {em}: MyContext                                 
@@ -31,7 +31,7 @@ export class PostResolver {
     }
 
     // Query para el update (update title by ID)
-    @Mutation(() => Post, { nullable: true })                               // graphql type                  
+    @Mutation(() => Post, { nullable: true })                               // graphql type (retorno un post o null)               
     async updatePost(
         @Arg('id') _id: number,                                             // paso parametros (argumentos) necesarios para editar un post
         @Arg('title', () => String, { nullable: true } ) title: string,
@@ -46,6 +46,16 @@ export class PostResolver {
             await em.persistAndFlush(post);
         }
         return post;
+    }
+
+    // Query para el delete
+    @Mutation(() => Boolean)                               // retorno un boolean ya que no necesito ver info del post despues de borrado                  
+    async deletePost(
+        @Arg('id') _id: number,                      // paso parametros q necesito para crear un nuevo post
+        @Ctx() {em}: MyContext                                 
+    ): Promise<boolean> {                                   // TS type
+        await em.nativeDelete(Post, { _id });
+        return true;
     }
 
 }
