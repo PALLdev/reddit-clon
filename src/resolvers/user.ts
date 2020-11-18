@@ -66,7 +66,22 @@ export class UserResolver {
             username: options.username,                                 // objeto que vamos a enviar a la DB
             password: hashedPassword
          });
-        await em.persistAndFlush(user)
+
+        try {
+            await em.persistAndFlush(user);                 // username is unique in my DB, so i need to validate the duplicate error 
+        } catch(err) {                               
+            if(err.code === "23505") {                      // duplicate username error code
+                return {
+                    errors: [
+                        {
+                        field: 'username',
+                        message: 'Este username ya existe, prueba con otro.'
+                        },
+                    ],
+                };
+            }
+        }
+
         return {user};                                               // Userresponse retorna un objeto
     }
 
