@@ -9,13 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Migration20201118160424 = void 0;
+exports.Migration20201121230848 = void 0;
 const migrations_1 = require("@mikro-orm/migrations");
-class Migration20201118160424 extends migrations_1.Migration {
+class Migration20201121230848 extends migrations_1.Migration {
     up() {
         return __awaiter(this, void 0, void 0, function* () {
         });
     }
 }
-exports.Migration20201118160424 = Migration20201118160424;
-//# sourceMappingURL=Migration20201118160424.js.map
+exports.Migration20201121230848 = Migration20201121230848;
+//# sourceMappingURL=Migration20201121230848.js.map

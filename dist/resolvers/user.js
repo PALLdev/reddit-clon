@@ -74,8 +74,8 @@ let UserResolver = class UserResolver {
                 return {
                     errors: [
                         {
-                            field: 'username',
-                            message: 'El username debe tener minimo 3 caracteres.'
+                            field: "username",
+                            message: "El username debe tener minimo 3 caracteres.",
                         },
                     ],
                 };
@@ -84,8 +84,8 @@ let UserResolver = class UserResolver {
                 return {
                     errors: [
                         {
-                            field: 'password',
-                            message: 'La contraseña debe tener minimo 4 caracteres.'
+                            field: "password",
+                            message: "La contraseña debe tener minimo 4 caracteres.",
                         },
                     ],
                 };
@@ -93,7 +93,7 @@ let UserResolver = class UserResolver {
             const hashedPassword = yield argon2_1.default.hash(options.password);
             const user = em.create(User_1.User, {
                 username: options.username,
-                password: hashedPassword
+                password: hashedPassword,
             });
             try {
                 yield em.persistAndFlush(user);
@@ -103,8 +103,8 @@ let UserResolver = class UserResolver {
                     return {
                         errors: [
                             {
-                                field: 'username',
-                                message: 'Este username ya existe, prueba con otro.'
+                                field: "username",
+                                message: "Este username ya existe, prueba con otro.",
                             },
                         ],
                     };
@@ -113,15 +113,15 @@ let UserResolver = class UserResolver {
             return { user };
         });
     }
-    login(options, { em }) {
+    login(options, { em, req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield em.findOne(User_1.User, { username: options.username });
             if (!user) {
                 return {
                     errors: [
                         {
-                            field: 'username',
-                            message: 'Este username no existe'
+                            field: "username",
+                            message: "Este username no existe",
                         },
                     ],
                 };
@@ -131,12 +131,13 @@ let UserResolver = class UserResolver {
                 return {
                     errors: [
                         {
-                            field: 'password',
-                            message: 'La contraseña no coincide, verifique'
+                            field: "password",
+                            message: "La contraseña no coincide, verifique",
                         },
                     ],
                 };
             }
+            req.session.userId = user.id;
             return {
                 user,
             };
@@ -145,7 +146,7 @@ let UserResolver = class UserResolver {
 };
 __decorate([
     type_graphql_1.Mutation(() => UserResponse),
-    __param(0, type_graphql_1.Arg('options')),
+    __param(0, type_graphql_1.Arg("options")),
     __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [UsernamePasswordInput, Object]),
@@ -153,7 +154,7 @@ __decorate([
 ], UserResolver.prototype, "register", null);
 __decorate([
     type_graphql_1.Mutation(() => UserResponse),
-    __param(0, type_graphql_1.Arg('options')),
+    __param(0, type_graphql_1.Arg("options")),
     __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [UsernamePasswordInput, Object]),
