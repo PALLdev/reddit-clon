@@ -7,6 +7,7 @@ import {
   InputType,
   Mutation,
   ObjectType,
+  Query,
   Resolver,
 } from "type-graphql";
 import argon2 from "argon2";
@@ -40,11 +41,24 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+  // QUIEN SOY (SESION)
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { req, em }: MyContext) {
+    console.log("session: ", req.session);
+
+    // you are not logged in (si no hay userId en la sesion)
+    if (!req.session.userId) {
+      return null;
+    }
+    const user = await em.findOne(User, { id: req.session.userId });
+    return user;
+  }
+
   // REGISTRAR user
   @Mutation(() => UserResponse)
   async register(
     @Arg("options") options: UsernamePasswordInput,
-    @Ctx() { em }: MyContext
+    @Ctx() { em, req }: MyContext
   ): Promise<UserResponse> {
     if (options.username.length <= 2) {
       // algunas validaciones para inputs
@@ -94,7 +108,8 @@ export class UserResolver {
     // store user id session
     // this will set a cookie on the user
     // keep them logged in
-    // req.session.id = user.id.toString();
+    req.session.userId = user.id;
+    req.session.keyFrase = "Funciona pasar datos!!";
 
     return { user }; // Userresponse retorna un objeto
   }
