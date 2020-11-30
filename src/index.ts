@@ -12,6 +12,7 @@ import { MyContext } from "./types";
 import session from "express-session";
 import redis from "redis";
 import conectRedis from "connect-redis";
+import cors from "cors";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig); // conect to a database
@@ -27,9 +28,17 @@ const main = async () => {
   //     res.send("HOLA");
   // });
 
+  // cors middleware para aplicarlos globalmente (in all routes)
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
+
+  // Sesion-middleware
   app.use(
     session({
-      // Sesion-middleware
       name: "sescookid", // nombre de mi session cookie
       store: new RedisStore({
         // conectando session con Redis storage
@@ -55,11 +64,18 @@ const main = async () => {
       validate: false, // turning off validation, that uses package Class validator(o algo asi)
     }),
     // context is accesible from all resolvers
-    context: ({ req, res }): MyContext => ({ em: orm.em, req, res }), // em contains the data on my database instance, req res contain data from session
+    // em contains the data on my database instance, req res contain data from session
+    context: ({ req, res }): MyContext => ({ em: orm.em, req, res }),
   });
 
-  apolloServer.applyMiddleware({ app }); // creating the graphQL endpoint on express
+  apolloServer.applyMiddleware({
+    app,
+    // apollo sets cors only for this route (necesito cors ya que cambie credentials a "include"), but i want my cors globally
+    // cors: { origin: "http://localhost:3000" },
+    cors: false,
+  });
 
+  // creating the graphQL endpoint on express
   app.listen(port, () => {
     console.log(`Server corriendo en localhost:${port}`);
   });
