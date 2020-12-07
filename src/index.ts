@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { MikroORM } from "@mikro-orm/core";
-import { __prod__ } from "./constants";
+import { COOKIE_NAME, __prod__ } from "./constants";
 import microConfig from "./mikro-orm.config";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
@@ -39,7 +39,7 @@ const main = async () => {
   // Sesion-middleware
   app.use(
     session({
-      name: "sescookid", // nombre de mi session cookie
+      name: COOKIE_NAME, // nombre de mi session cookie
       store: new RedisStore({
         // conectando session con Redis storage
         client: redisClient, // touch reinicia el tiempo de sesion si el user hizo una accion

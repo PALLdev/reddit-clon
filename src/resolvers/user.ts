@@ -11,6 +11,7 @@ import {
   Resolver,
 } from "type-graphql";
 import argon2 from "argon2";
+import { COOKIE_NAME } from "../constants";
 
 @InputType()
 class UsernamePasswordInput {
@@ -44,8 +45,6 @@ export class UserResolver {
   // QUIEN SOY (SESION)
   @Query(() => User, { nullable: true })
   async me(@Ctx() { req, em }: MyContext) {
-    console.log("session: ", req.session);
-
     // you are not logged in (si no hay userId en la sesion)
     if (!req.session.userId) {
       return null;
@@ -104,7 +103,6 @@ export class UserResolver {
         };
       }
     }
-
     // store user id session
     // this will set a cookie on the user
     // keep them logged in
@@ -152,5 +150,20 @@ export class UserResolver {
       // si ambos datos son validos retorno el user
       user,
     };
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { req, res }: MyContext) {
+    return new Promise((resolve) =>
+      req.session.destroy((err: any) => {
+        if (err) {
+          console.log(err);
+          resolve(false);
+          return;
+        }
+        res.clearCookie(COOKIE_NAME);
+        resolve(true);
+      })
+    );
   }
 }
